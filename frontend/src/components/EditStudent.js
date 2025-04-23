@@ -16,7 +16,7 @@ const EditStudent = () => {
   });
 
   useEffect(() => {
-    fetch(`http://localhost:5000/students/${id}`)
+    fetch(`https://wt-assignment-2-gdbb.onrender.com/students/${id}`)
       .then(res => res.json())
       .then(data => setForm(data));
   }, [id]);
@@ -28,7 +28,7 @@ const EditStudent = () => {
 
   const handleSubmit = async e => {
     e.preventDefault();
-    await fetch(`http://localhost:5000/students/${id}`, {
+    await fetch(`https://wt-assignment-2-gdbb.onrender.com/students/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form)
