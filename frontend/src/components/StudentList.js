@@ -5,13 +5,13 @@ const StudentList = () => {
   const [students, setStudents] = useState([]);
 
   const fetchStudents = async () => {
-    const res = await fetch('http://localhost:5000/students');
+    const res = await fetch('https://wt-assignment-2-gdbb.onrender.com/students');
     const data = await res.json();
     setStudents(data);
   };
 
   const deleteStudent = async (id) => {
-    await fetch(`http://localhost:5000/students/${id}`, { method: 'DELETE' });
+    await fetch(`https://wt-assignment-2-gdbb.onrender.com/students/${id}`, { method: 'DELETE' });
     fetchStudents();
   };
 
