@@ -22,7 +22,7 @@ const AddStudent = () => {
 
   const handleSubmit = async e => {
     e.preventDefault();
-    await fetch('https://wt-assignment-2-gdbb.onrender.com', {
+    await fetch('https://wt-assignment-2-gdbb.onrender.com/students', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form)
