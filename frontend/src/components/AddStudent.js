@@ -49,7 +49,7 @@ const styles = {
 
 const AddStudent = () => {
   const [form, setForm] = useState({
-      studentId: '',
+    studentId: '',
     fname: '',
     lname: '',
     email: '',
@@ -71,13 +71,13 @@ const AddStudent = () => {
     e.preventDefault();
 
     // Basic form validation
-    if (!form.FirstName || !form.LastName || !form.EmailID || !form.DOB) {
+    if (!form.fname || !form.lname || !form.email || !form.dob) {
       setError('Please fill out all required fields.');
       return;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(form.EmailID)) {
+    if (!emailRegex.test(form.email)) {
       setError('Please enter a valid email address.');
       return;
     }
@@ -102,10 +102,12 @@ const AddStudent = () => {
       {Object.keys(form).map(key => (
         key !== 'isActive' ? (
           <div key={key} style={styles.inputGroup}>
-            <label htmlFor={key} style={styles.label}>{key === 'EmailID' ? 'Email' : key}:</label>
+            <label htmlFor={key} style={styles.label}>
+              {key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}: {/* This converts the key to a human-readable label */}
+            </label>
             <input
               id={key}
-              type={key === 'DOB' ? 'date' : 'text'}
+              type={key === 'dob' ? 'date' : 'text'}
               name={key}
               value={form[key]}
               onChange={handleChange}
