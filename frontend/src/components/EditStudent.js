@@ -48,7 +48,7 @@ const styles = {
 };
 
 const EditStudent = () => {
-  const { id } = useParams();
+  const { id } = useParams();  // Get the student ID from the URL
   const navigate = useNavigate();
   const [form, setForm] = useState({
     studentId: '',
@@ -60,11 +60,11 @@ const EditStudent = () => {
     enrolmentYear: '',
     isActive: true
   });
-  
   const [error, setError] = useState('');
 
   // Fetch student data on component mount
   useEffect(() => {
+    console.log(`Fetching data for student with ID: ${id}`);  // Log the student ID
     fetch(`https://wt-assignment-2-gdbb.onrender.com/students/${id}`)
       .then(res => {
         if (!res.ok) {
@@ -72,12 +72,15 @@ const EditStudent = () => {
         }
         return res.json();
       })
-      .then(data => setForm(data))
+      .then(data => {
+        console.log('Student data fetched:', data);  // Log the fetched data
+        setForm(data);
+      })
       .catch(error => {
-        console.error(error);
+        console.error('Error fetching data:', error);  // Log error if fetch fails
         setError(error.message);  // Display error message
       });
-  }, [id]);
+  }, [id]);  // Trigger re-fetch when `id` changes
 
   // Handle form field changes
   const handleChange = e => {
