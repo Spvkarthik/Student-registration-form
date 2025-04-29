@@ -64,17 +64,24 @@ const EditStudent = () => {
 
   // Fetch student data on component mount
   useEffect(() => {
-    console.log(`Fetching data for student with ID: ${id}`);  // Log the student ID
+    if (!id) {
+      setError('No student ID provided.');
+      return;
+    }
+
+    console.log(`Fetching data for student with ID: ${id}`);
+    
+    // Fetch student data based on the student ID
     fetch(`https://wt-assignment-2-gdbb.onrender.com/students/${id}`)
       .then(res => {
         if (!res.ok) {
-          throw new Error('Failed to fetch student data');
+          throw new Error(`Failed to fetch student data with status: ${res.status}`);
         }
         return res.json();
       })
       .then(data => {
         console.log('Student data fetched:', data);  // Log the fetched data
-        setForm(data);
+        setForm(data);  // Set the form data with the fetched data
       })
       .catch(error => {
         console.error('Error fetching data:', error);  // Log error if fetch fails
