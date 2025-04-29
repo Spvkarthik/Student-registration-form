@@ -40,6 +40,10 @@ const styles = {
     border: 'none',
     borderRadius: '4px',
     cursor: 'pointer'
+  },
+  errorText: {
+    color: 'red',
+    marginBottom: '10px'
   }
 };
 
@@ -47,7 +51,7 @@ const EditStudent = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [form, setForm] = useState({
-     studentId: '',
+    studentId: '',
     fname: '',
     lname: '',
     email: '',
@@ -56,12 +60,14 @@ const EditStudent = () => {
     enrolmentYear: '',
     isActive: true
   });
-  
+  const [error, setError] = useState('');
 
   useEffect(() => {
+    // Fetch the student data
     fetch(`https://wt-assignment-2-gdbb.onrender.com/students/${id}`)
       .then(res => res.json())
-      .then(data => setForm(data));
+      .then(data => setForm(data))
+      .catch(err => setError('Failed to fetch student data. Please try again later.'));
   }, [id]);
 
   const handleChange = e => {
@@ -71,21 +77,49 @@ const EditStudent = () => {
 
   const handleSubmit = async e => {
     e.preventDefault();
-    await fetch(`https://wt-assignment-2-gdbb.onrender.com/students/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form)
-    });
-    navigate('/');
+
+    // Validate the form data
+    if (!form.fname || !form.lname || !form.email || !form.dob || !form.department || !form.enrolmentYear) {
+      setError('Please fill out all required fields.');
+      return;
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(form.email)) {
+      setError('Please enter a valid email address.');
+      return;
+    }
+
+    // Submit the form data
+    try {
+      await fetch(`https://wt-assignment-2-gdbb.onrender.com/students/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form)
+      });
+
+      setError(''); // Clear error on success
+      navigate('/'); // Redirect to the list page
+    } catch (err) {
+      setError('Failed to update student data. Please try again.');
+    }
   };
 
   return (
     <form onSubmit={handleSubmit} style={styles.formContainer}>
       <h2>Edit Student</h2>
+      
+      {/* Display error message if any */}
+      {error && <div style={styles.errorText}>{error}</div>}
+
+      {/* Iterate through form fields and create inputs */}
       {Object.keys(form).map(key => (
         key !== 'isActive' ? (
           <div key={key} style={styles.inputGroup}>
-            <label htmlFor={key} style={styles.label}>{key}:</label>
+            <label htmlFor={key} style={styles.label}>
+              {key === 'fname' ? 'First Name' : key === 'lname' ? 'Last Name' : key === 'dob' ? 'Date of Birth' : key === 'email' ? 'Email' : key.charAt(0).toUpperCase() + key.slice(1)}:
+            </label>
             <input
               id={key}
               type={key === 'dob' ? 'date' : 'text'}
@@ -108,9 +142,11 @@ const EditStudent = () => {
           </div>
         )
       ))}
+      
+      {/* Submit button */}
       <button type="submit" style={styles.button}>Update</button>
     </form>
   );
-}  
+};
 
 export default EditStudent;
