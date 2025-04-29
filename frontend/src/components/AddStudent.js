@@ -58,24 +58,27 @@ const AddStudent = () => {
     enrolmentYear: '',
     isActive: true
   });
-  
+
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
+  // Function to handle changes in the form fields
   const handleChange = e => {
     const { name, value, type, checked } = e.target;
     setForm({ ...form, [name]: type === 'checkbox' ? checked : value });
   };
 
+  // Handle form submission
   const handleSubmit = async e => {
     e.preventDefault();
 
     // Basic form validation
-    if (!form.fname || !form.lname || !form.email || !form.dob) {
+    if (!form.fname || !form.lname || !form.email || !form.dob || !form.department || !form.enrolmentYear) {
       setError('Please fill out all required fields.');
       return;
     }
 
+    // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(form.email)) {
       setError('Please enter a valid email address.');
@@ -88,8 +91,9 @@ const AddStudent = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form)
       });
+
       setError(''); // Clear error on success
-      navigate('/');
+      navigate('/'); // Redirect to the list page
     } catch (err) {
       setError('Failed to add student. Please try again.');
     }
@@ -98,18 +102,22 @@ const AddStudent = () => {
   return (
     <form onSubmit={handleSubmit} style={styles.formContainer}>
       <h2>Add Student</h2>
+
+      {/* Display error message if any */}
       {error && <div style={styles.errorText}>{error}</div>}
+
+      {/* Form inputs */}
       {Object.keys(form).map(key => (
         key !== 'isActive' ? (
           <div key={key} style={styles.inputGroup}>
             <label htmlFor={key} style={styles.label}>
-              {key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}: {/* This converts the key to a human-readable label */}
+              {key === 'fname' ? 'First Name' : key === 'lname' ? 'Last Name' : key === 'dob' ? 'Date of Birth' : key === 'email' ? 'Email' : key.charAt(0).toUpperCase() + key.slice(1)}:
             </label>
             <input
               id={key}
               type={key === 'dob' ? 'date' : 'text'}
               name={key}
-              value={form[key]}
+              value={key === 'dob' ? form[key].slice(0, 10) : form[key]} // For DOB, use the first 10 chars (yyyy-mm-dd)
               onChange={handleChange}
               style={styles.input}
             />
@@ -127,6 +135,8 @@ const AddStudent = () => {
           </div>
         )
       ))}
+
+      {/* Submit button */}
       <button type="submit" style={styles.button}>Submit</button>
     </form>
   );
