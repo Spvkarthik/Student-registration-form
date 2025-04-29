@@ -47,13 +47,13 @@ const EditStudent = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [form, setForm] = useState({
-    StudentId: '',
-    FirstName: '',
-    LastName: '',
-    EmailID: '',
-    DOB: '',
-    Department: '',
-    EnrolmentYear: '',
+     studentId: '',
+    fname: '',
+    lname: '',
+    email: '',
+    dob: '',
+    department: '',
+    enrolmentYear: '',
     isActive: true
   });
   
