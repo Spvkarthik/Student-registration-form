@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Student = require('../models/Student');
 
-// Get all students
+// GET all students
 router.get('/', async (req, res) => {
   try {
     const students = await Student.find();
@@ -12,7 +12,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Get a student by ID
+// GET single student by ID
 router.get('/:id', async (req, res) => {
   try {
     const student = await Student.findById(req.params.id);
@@ -25,7 +25,7 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// Add a new student
+// POST - Add a new student
 router.post('/', async (req, res) => {
   try {
     const student = new Student(req.body);
@@ -36,20 +36,26 @@ router.post('/', async (req, res) => {
   }
 });
 
-// Update student by ID
+// PUT - Update student by ID
 router.put('/:id', async (req, res) => {
   try {
     const updated = await Student.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!updated) {
+      return res.status(404).json({ error: 'Student not found' });
+    }
     res.json(updated);
   } catch (err) {
     res.status(400).json({ error: 'Failed to update student' });
   }
 });
 
-// Delete student by ID
+// DELETE - Delete student by ID
 router.delete('/:id', async (req, res) => {
   try {
-    await Student.findByIdAndDelete(req.params.id);
+    const deleted = await Student.findByIdAndDelete(req.params.id);
+    if (!deleted) {
+      return res.status(404).json({ error: 'Student not found' });
+    }
     res.json({ message: 'Student deleted' });
   } catch (err) {
     res.status(400).json({ error: 'Failed to delete student' });
