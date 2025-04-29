@@ -60,66 +60,69 @@ const EditStudent = () => {
     enrolmentYear: '',
     isActive: true
   });
+  
   const [error, setError] = useState('');
 
+  // Fetch student data on component mount
   useEffect(() => {
-    // Fetch the student data
     fetch(`https://wt-assignment-2-gdbb.onrender.com/students/${id}`)
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) {
+          throw new Error('Failed to fetch student data');
+        }
+        return res.json();
+      })
       .then(data => setForm(data))
-      .catch(err => setError('Failed to fetch student data. Please try again later.'));
+      .catch(error => {
+        console.error(error);
+        setError(error.message);  // Display error message
+      });
   }, [id]);
 
+  // Handle form field changes
   const handleChange = e => {
     const { name, value, type, checked } = e.target;
     setForm({ ...form, [name]: type === 'checkbox' ? checked : value });
   };
 
+  // Handle form submission
   const handleSubmit = async e => {
     e.preventDefault();
 
-    // Validate the form data
-    if (!form.fname || !form.lname || !form.email || !form.dob || !form.department || !form.enrolmentYear) {
+    // Validation to ensure that required fields are filled
+    if (!form.fname || !form.lname || !form.email || !form.dob) {
       setError('Please fill out all required fields.');
       return;
     }
 
-    // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(form.email)) {
       setError('Please enter a valid email address.');
       return;
     }
 
-    // Submit the form data
+    // Update the student data via PUT request
     try {
       await fetch(`https://wt-assignment-2-gdbb.onrender.com/students/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form)
       });
-
-      setError(''); // Clear error on success
-      navigate('/'); // Redirect to the list page
+      setError(''); // Clear any errors on success
+      navigate('/'); // Redirect to the homepage after successful update
     } catch (err) {
-      setError('Failed to update student data. Please try again.');
+      setError('Failed to update student. Please try again.');
     }
   };
 
   return (
     <form onSubmit={handleSubmit} style={styles.formContainer}>
       <h2>Edit Student</h2>
-      
-      {/* Display error message if any */}
-      {error && <div style={styles.errorText}>{error}</div>}
-
-      {/* Iterate through form fields and create inputs */}
+      {error && <div style={styles.errorText}>{error}</div>} {/* Show error if any */}
       {Object.keys(form).map(key => (
         key !== 'isActive' ? (
           <div key={key} style={styles.inputGroup}>
-            <label htmlFor={key} style={styles.label}>
-              {key === 'fname' ? 'First Name' : key === 'lname' ? 'Last Name' : key === 'dob' ? 'Date of Birth' : key === 'email' ? 'Email' : key.charAt(0).toUpperCase() + key.slice(1)}:
-            </label>
+            <label htmlFor={key} style={styles.label}>{key === 'email' ? 'Email' : key}:</label>
             <input
               id={key}
               type={key === 'dob' ? 'date' : 'text'}
@@ -142,8 +145,6 @@ const EditStudent = () => {
           </div>
         )
       ))}
-      
-      {/* Submit button */}
       <button type="submit" style={styles.button}>Update</button>
     </form>
   );
