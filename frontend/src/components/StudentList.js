@@ -54,13 +54,13 @@ const StudentList = () => {
   const [students, setStudents] = useState([]);
 
   const fetchStudents = async () => {
-    const res = await fetch('https://wt-assignment-2-gdbb.onrender.com/students');
+    const res = await fetch('https://student-registration-form-backend.onrender.com/students');
     const data = await res.json();
     setStudents(data);
   };
 
   const deleteStudent = async (id) => {
-    await fetch(`https://wt-assignment-2-gdbb.onrender.com/students/${id}`, { method: 'DELETE' });
+    await fetch(`https://student-registration-form-backend.onrender.com/students/${id}`, { method: 'DELETE' });
     fetchStudents();
   };
 
