@@ -72,7 +72,7 @@ const EditStudent = () => {
     console.log(`Fetching data for student with ID: ${id}`);
     
     // Fetch student data based on the student ID
-    fetch(`https://wt-assignment-2-gdbb.onrender.com/students/${id}`)
+    fetch(`https://student-registration-form-backend.onrender.com/students/${id}`)
       .then(res => {
         if (!res.ok) {
           throw new Error(`Failed to fetch student data with status: ${res.status}`);
