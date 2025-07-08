@@ -86,7 +86,7 @@ const AddStudent = () => {
     }
 
     try {
-      await fetch('https://wt-assignment-2-gdbb.onrender.com/students', {
+      await fetch('https://student-registration-form-backend.onrender.com', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form)
