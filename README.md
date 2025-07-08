@@ -27,5 +27,5 @@ MongoDB (Mongoose)
 
 - 🚀 [https://student-registration-form-frontend.onrender.com](https://student-registration-form-frontend.onrender.com/)  
 
-> ⚠️ Note: The backend may take a few seconds to wake up if it's on free-tier Render hosting.
+
 
